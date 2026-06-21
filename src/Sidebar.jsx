@@ -1,0 +1,81 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
+export default function Sidebar({ active }) {
+  const navigate = useNavigate();
+
+  return (
+    <div className="w-[260px] bg-black border-r-4 border-blue-600 p-5 flex flex-col shrink-0 h-screen print:hidden shadow-[4px_0_15px_rgba(37,99,235,0.2)]">
+      
+      {/* AREA HEADER MINIMALIS */}
+      <div className="mb-8 flex flex-col items-center text-center border-b-4 border-blue-600 pb-5">
+        <img 
+          src="/logo.png" 
+          alt="Logo Yagez Store" 
+          className="h-16 w-auto object-contain mb-3 rounded-lg border-2 border-yellow-400 p-1"
+          onError={(e) => { e.target.style.display = 'none'; }}
+        />
+        <h2 className="text-2xl font-extrabold text-yellow-400 tracking-widest uppercase drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]">
+          YAGEZ STORE
+        </h2>
+        <p className="text-cyan-400 text-[11px] font-bold tracking-widest mt-1 uppercase">Kasir Top-Up</p>
+        
+        <div className="mt-3 px-3 py-1 bg-blue-900/30 border border-blue-500 rounded-full">
+          <p className="text-blue-200 text-[10px] font-bold tracking-widest uppercase">
+            Workspace Admin
+          </p>
+        </div>
+      </div>
+
+      <nav className="flex flex-col gap-3 flex-grow mt-2">
+        <small className="text-gray-500 font-bold text-[10px] uppercase tracking-widest mb-1">Pilih Mode</small>
+        
+        <button 
+          onClick={() => navigate('/')} 
+          className={`font-bold p-3 rounded text-left transition-all border-2 flex items-center gap-3 ${
+            active === 'dashboard' 
+            ? 'bg-yellow-400 text-black border-yellow-400 shadow-[0_0_10px_#facc15]' 
+            : 'bg-transparent text-blue-300 border-blue-900 hover:border-blue-500 hover:text-white'
+          }`}
+        >
+          <span className="text-xl">📊</span> Dashboard Laporan
+        </button>
+        
+        <button 
+          onClick={() => navigate('/kasir')} 
+          className={`font-bold p-3 rounded text-left transition-all border-2 flex items-center gap-3 ${
+            active === 'kasir' 
+            ? 'bg-yellow-400 text-black border-yellow-400 shadow-[0_0_10px_#facc15]' 
+            : 'bg-transparent text-blue-300 border-blue-900 hover:border-blue-500 hover:text-white'
+          }`}
+        >
+          <span className="text-xl">👾</span> Layar Kasir
+        </button>
+        
+        <button 
+          onClick={() => navigate('/produk')} 
+          className={`font-bold p-3 rounded text-left transition-all border-2 flex items-center gap-3 ${
+            active === 'produk' 
+            ? 'bg-yellow-400 text-black border-yellow-400 shadow-[0_0_10px_#facc15]' 
+            : 'bg-transparent text-blue-300 border-blue-900 hover:border-blue-500 hover:text-white'
+          }`}
+        >
+          <span className="text-xl">📦</span> Kelola Produk
+        </button>
+
+        <small className="text-gray-500 font-bold text-[10px] uppercase tracking-widest mt-6 mb-1">Aksi Cepat</small>
+        
+        <button 
+          onClick={() => window.print()} 
+          className="bg-transparent border-2 border-pink-500 text-pink-400 hover:bg-pink-500 hover:text-black p-3 rounded text-left font-bold transition-all flex items-center gap-3"
+        >
+          <span className="text-xl">🖨️</span> Cetak Laporan
+        </button>
+      </nav>
+
+      <button className="text-red-500 border-2 border-red-600 bg-transparent hover:bg-red-600 hover:text-white hover:shadow-[0_0_10px_#dc2626] p-3 rounded mt-auto font-bold transition-all flex justify-center items-center gap-2">
+        <span>👻</span> Keluar Akun
+      </button>
+    </div>
+  );
+}
