@@ -7,10 +7,7 @@ export default function Sidebar({ active }) {
 
   return (
     <>
-      {/* =========================================
-          TOP BAR KHUSUS MOBILE (BARU)
-          Hanya muncul di HP, jadi rumah buat tombol Menu
-      ========================================= */}
+      {/* TOP BAR KHUSUS MOBILE */}
       <div className="md:hidden fixed top-0 left-0 w-full h-16 bg-black border-b-2 border-blue-600 z-40 flex items-center px-4 shadow-[0_4px_15px_rgba(0,0,0,0.8)]">
         <button
           onClick={() => setIsOpen(true)}
@@ -19,7 +16,6 @@ export default function Sidebar({ active }) {
           <span className="text-xl leading-none">☰</span>
         </button>
         
-        {/* Nama Toko di Top Bar agar tidak kosong */}
         <h1 className="ml-4 text-yellow-400 font-extrabold tracking-widest uppercase text-sm drop-shadow-[0_0_5px_rgba(250,204,21,0.8)]">
           YAGEZ STORE
         </h1>
@@ -93,12 +89,6 @@ export default function Sidebar({ active }) {
             }`}
           >
             <span className="text-xl">📦</span> Kelola Produk
-          </button>
-
-          <small className="text-gray-500 font-bold text-[10px] uppercase tracking-widest mt-6 mb-1">Aksi Cepat</small>
-          
-          <button onClick={() => window.print()} className="bg-transparent border-2 border-pink-500 text-pink-400 hover:bg-pink-500 hover:text-black p-3 rounded text-left font-bold transition-all flex items-center gap-3">
-            <span className="text-xl">🖨️</span> Cetak Laporan
           </button>
         </nav>
 

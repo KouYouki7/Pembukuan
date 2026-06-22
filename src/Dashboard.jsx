@@ -105,16 +105,24 @@ export default function Dashboard() {
       <Sidebar active="dashboard" />
 
       {/* MAIN CONTENT */}
-      {/* Tambahkan pt-20 di HP agar tidak tertutup tombol Menu */}
       <div className="flex-1 p-5 md:p-8 overflow-y-auto pt-20 md:pt-8 w-full">
         
-        {/* HEADER */}
-        <div className="mb-6 md:mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold">Laporan Penjualan</h2>
-          <p className="text-gray-400 text-sm md:text-base">Ringkasan performa penjualan tokomu.</p>
+        {/* HEADER DENGAN TOMBOL CETAK */}
+        <div className="mb-6 md:mb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-bold">Laporan Penjualan</h2>
+            <p className="text-gray-400 text-sm md:text-base">Ringkasan performa penjualan tokomu.</p>
+          </div>
+          
+          <button 
+            onClick={() => window.print()} 
+            className="bg-transparent border-2 border-pink-500 text-pink-400 hover:bg-pink-500 hover:text-black px-4 py-2 rounded-lg font-bold transition-transform active:scale-95 flex items-center gap-2 w-fit shadow-[0_0_10px_rgba(236,72,153,0.3)] hover:shadow-[0_0_15px_rgba(236,72,153,0.6)]"
+          >
+            <span className="text-xl">🖨️</span> Cetak Laporan
+          </button>
         </div>
 
-        {/* 4 KOTAK STATISTIK - Menjadi 2 kolom di HP, 4 kolom di Laptop */}
+        {/* 4 KOTAK STATISTIK */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
           {[ 
             { t: 'UNTUNG HARI INI', v: stats.hari, c: 'text-[#0dcaf0]' }, 
@@ -130,7 +138,6 @@ export default function Dashboard() {
         </div>
 
         {/* BAR DETAIL LAPORAN BULANAN */}
-        {/* Di HP flex-col (numpuk ke bawah), di Laptop flex-row (bersampingan) */}
         <div className="bg-[#111] p-4 rounded-xl border border-blue-900 mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           <div className="flex items-center gap-3 md:gap-4">
             <div className="bg-blue-900/40 border border-blue-600 p-2 md:p-3 rounded-lg text-xl">📊</div>
@@ -150,10 +157,10 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* GRID KONTEN BAWAH - Di HP 1 kolom, di Laptop 12 Kolom */}
+        {/* GRID KONTEN BAWAH */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-10">
           
-          {/* KOLOM KIRI: KATEGORI */}
+          {/* KOLOM KATEGORI */}
           <div className="lg:col-span-4 bg-[#111] p-4 md:p-5 rounded-xl border border-blue-900 h-fit">
             <h4 className="font-bold mb-4 md:mb-5 flex items-center gap-2">📈 Keuntungan per Kategori</h4>
             {kategori.length === 0 && <p className="text-gray-500 text-sm">Belum ada transaksi di bulan ini.</p>}
