@@ -17,7 +17,7 @@ export default function Sidebar({ active }) {
         </button>
         
         <h1 className="ml-4 text-yellow-400 font-extrabold tracking-widest uppercase text-sm drop-shadow-[0_0_5px_rgba(250,204,21,0.8)]">
-          YAGEZ STORE
+          YAGEZ TRACKER
         </h1>
       </div>
 
@@ -45,14 +45,14 @@ export default function Sidebar({ active }) {
         <div className="mb-8 flex flex-col items-center text-center border-b-4 border-blue-600 pb-5 mt-2 md:mt-0">
           <img 
             src="/logo.png" 
-            alt="Logo Yagez Store" 
+            alt="Logo Yagez Tracker" 
             className="h-16 w-auto object-contain mb-3 rounded-lg border-2 border-yellow-400 p-1 bg-black"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
           <h2 className="text-2xl font-extrabold text-yellow-400 tracking-widest uppercase drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]">
-            YAGEZ STORE
+            YAGEZ TRACKER
           </h2>
-          <p className="text-cyan-400 text-[11px] font-bold tracking-widest mt-1 uppercase">Kasir Top-Up</p>
+          <p className="text-cyan-400 text-[11px] font-bold tracking-widest mt-1 uppercase">Sistem Pembukuan</p>
           
           <div className="mt-3 px-3 py-1 bg-blue-900/30 border border-blue-500 rounded-full">
             <p className="text-blue-200 text-[10px] font-bold tracking-widest uppercase">
@@ -73,13 +73,14 @@ export default function Sidebar({ active }) {
             <span className="text-xl">📊</span> Dashboard
           </button>
           
+          {/* SEKARANG SUDAH MENGARAH KE /transaksi */}
           <button 
-            onClick={() => { navigate('/kasir'); setIsOpen(false); }} 
+            onClick={() => { navigate('/transaksi'); setIsOpen(false); }} 
             className={`font-bold p-3 rounded text-left transition-all border-2 flex items-center gap-3 ${
-              active === 'kasir' ? 'bg-yellow-400 text-black border-yellow-400 shadow-[0_0_10px_#facc15]' : 'bg-transparent text-blue-300 border-blue-900 hover:border-blue-500 hover:text-white'
+              active === 'transaksi' ? 'bg-yellow-400 text-black border-yellow-400 shadow-[0_0_10px_#facc15]' : 'bg-transparent text-blue-300 border-blue-900 hover:border-blue-500 hover:text-white'
             }`}
           >
-            <span className="text-xl">👾</span> Layar Kasir
+            <span className="text-xl">👾</span> Transaksi
           </button>
           
           <button 

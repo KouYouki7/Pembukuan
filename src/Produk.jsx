@@ -71,7 +71,6 @@ export default function Produk() {
     });
     setEditId(prod.id);
 
-    // Memerintahkan layar untuk scroll mulus ke elemen dengan ID 'area-form'
     const formElement = document.getElementById('area-form');
     if (formElement) {
       formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -98,20 +97,15 @@ export default function Produk() {
 
   return (
     <div className="flex h-screen bg-black text-white font-sans overflow-hidden">
-      {/* SIDEBAR */}
       <Sidebar active="produk" />
 
-      {/* MAIN CONTENT */}
-      {/* Ditambahkan pt-20 untuk jarak tombol menu di HP */}
       <div className="flex-1 p-5 md:p-8 overflow-y-auto relative scroll-smooth pt-20 md:pt-8 w-full">
         
-        {/* HEADER */}
         <div className="mb-6">
           <h2 className="text-2xl md:text-3xl font-bold text-white">Kelola Produk</h2>
           <p className="text-gray-400 text-sm md:text-base">Daftar harga modal dan harga jual produk tokomu.</p>
         </div>
 
-        {/* FORM KELOLA PRODUK */}
         <div 
           id="area-form" 
           className={`border-2 rounded-xl mb-8 shadow-sm transition-all duration-500 ${editId ? 'bg-[#111] border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.2)]' : 'bg-[#111] border-blue-900'}`}
@@ -123,12 +117,27 @@ export default function Produk() {
           </div>
           
           <div className="p-5">
-            {/* GRID: 1 Kolom di HP, 2 di Tablet, 5 di Laptop */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-5">
               <div>
                 <label className="block text-xs font-bold text-blue-300 mb-2 uppercase tracking-wide">Kategori</label>
-                <input type="text" name="kategori" value={form.kategori} onChange={handleInputChange} placeholder="Cth: FREE FIRE" className="w-full bg-black border border-blue-600 text-white p-3 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] uppercase transition" />
+                <select 
+                  name="kategori" 
+                  value={form.kategori} 
+                  onChange={handleInputChange} 
+                  className="w-full bg-black border border-blue-600 text-white p-3 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] uppercase transition cursor-pointer"
+                >
+                  <option value="" disabled>-- Pilih Kategori --</option>
+                  <option value="MOBILE LEGENDS">Mobile Legends</option>
+                  <option value="FREE FIRE">Free Fire</option>
+                  <option value="PUBG MOBILE">PUBG Mobile</option>
+                  <option value="VALORANT">Valorant</option>
+                  <option value="GENSHIN IMPACT">Genshin Impact</option>
+                  <option value="AKUN PREMIUM">Akun Premium (Netflix, dll)</option>
+                  <option value="PULSA & DATA">Pulsa & Data</option>
+                  <option value="LAINNYA">Lainnya...</option>
+                </select>
               </div>
+
               <div>
                 <label className="block text-xs font-bold text-blue-300 mb-2 uppercase tracking-wide">Kode Produk</label>
                 <input type="text" name="kode_barang" value={form.kode_barang} onChange={handleInputChange} placeholder="Cth: FF70" className="w-full bg-black border border-blue-600 text-white p-3 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] uppercase transition" />
@@ -160,7 +169,6 @@ export default function Produk() {
           </div>
         </div>
 
-        {/* TABEL DAFTAR PRODUK */}
         <h3 className="font-bold text-lg mb-3 flex items-center gap-2 text-white">📋 Daftar Produk Aktif</h3>
         <div className="bg-[#111] border border-blue-900 rounded-xl overflow-hidden shadow-sm">
           <div className="overflow-x-auto pb-4">
@@ -177,14 +185,12 @@ export default function Produk() {
               <tbody>
                 {Object.entries(groupedProducts).map(([kategori, items]) => (
                   <React.Fragment key={kategori}>
-                    {/* BARIS KATEGORI */}
                     <tr className="bg-blue-900/30 border-b-2 border-blue-900">
                       <td colSpan="5" className="px-4 py-3 font-extrabold text-cyan-400 uppercase tracking-wide">
                         📌 KATEGORI: {kategori}
                       </td>
                     </tr>
                     
-                    {/* DATA PRODUK */}
                     {items.map((prod) => (
                       <tr key={prod.id} className="border-b border-blue-900/40 hover:bg-blue-900/20 transition-colors">
                         <td className="px-4 py-3 font-bold text-yellow-400 font-mono">{prod.kode_barang}</td>
