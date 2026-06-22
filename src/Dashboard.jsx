@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabase';
 import Sidebar from './Sidebar';
+// IMPORT RECHARTS UNTUK GRAFIK
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function Dashboard() {
   const [allTrx, setAllTrx] = useState([]);
@@ -14,6 +16,9 @@ export default function Dashboard() {
   const [stats, setStats] = useState({ hari: 0, minggu: 0, bulan: 0, total: 0 });
   const [kategori, setKategori] = useState([]);
   const [pelanggan, setPelanggan] = useState([]);
+  
+  // STATE BARU UNTUK DATA GRAFIK
+  const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,6 +56,27 @@ export default function Dashboard() {
     setStats({ hari: uHari, minggu: uHari * 3, bulan: uBulan, total: allTrx.length }); 
 
     const filteredTrx = allTrx.filter(trx => trx.created_at.startsWith(filterBulan));
+
+    // LOGIKA UNTUK GRAFIK HARIAN
+    const [year, month] = filterBulan.split('-');
+    const daysInMonth = new Date(year, month, 0).getDate();
+    
+    // Siapkan array kosong untuk setiap hari di bulan tersebut
+    const dailyData = Array.from({ length: daysInMonth }, (_, i) => ({
+      tanggal: String(i + 1).padStart(2, '0'),
+      laba: 0,
+      order: 0
+    }));
+
+    filteredTrx.forEach(trx => {
+      const day = trx.created_at.split('T')[0].split('-')[2]; // Ambil tanggalnya saja
+      const dayIndex = parseInt(day, 10) - 1;
+      if (dailyData[dayIndex]) {
+        dailyData[dayIndex].laba += (Number(trx.harga_jual_saat_transaksi) - Number(trx.modal_saat_transaksi));
+        dailyData[dayIndex].order += 1;
+      }
+    });
+    setChartData(dailyData);
 
     const catMap = {};
     filteredTrx.forEach(trx => {
@@ -116,7 +142,7 @@ export default function Dashboard() {
           
           <button 
             onClick={() => window.print()} 
-            className="bg-transparent border-2 border-pink-500 text-pink-400 hover:bg-pink-500 hover:text-black px-4 py-2 rounded-lg font-bold transition-transform active:scale-95 flex items-center gap-2 w-fit shadow-[0_0_10px_rgba(236,72,153,0.3)] hover:shadow-[0_0_15px_rgba(236,72,153,0.6)]"
+            className="bg-transparent border-2 border-pink-500 text-pink-400 hover:bg-pink-500 hover:text-black px-4 py-2 rounded-lg font-bold transition-transform active:scale-95 flex items-center gap-2 w-fit shadow-[0_0_10px_rgba(236,72,153,0.3)] hover:shadow-[0_0_15px_rgba(236,72,153,0.6)] print:hidden"
           >
             <span className="text-xl">🖨️</span> Cetak Laporan
           </button>
@@ -146,7 +172,7 @@ export default function Dashboard() {
               <p className="text-yellow-400 text-xs md:text-sm font-bold">Periode: {formatBulanTeks(filterBulan)}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="flex items-center gap-3 w-full md:w-auto print:hidden">
             <label className="text-gray-400 text-xs md:text-sm font-bold whitespace-nowrap">Filter Bulan:</label>
             <input 
               type="month" 
@@ -157,12 +183,55 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* GRID KONTEN BAWAH */}
+        {/* ====================================
+            GRAFIK TREN KEUNTUNGAN (BARU)
+            ==================================== */}
+        <div className="bg-[#111] p-5 rounded-xl border border-blue-900 mb-6">
+          <h4 className="font-bold mb-4 flex items-center gap-2">📈 Grafik Tren Keuntungan Harian</h4>
+          <div className="w-full h-[250px] md:h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  {/* Efek Gradasi Warna Neon Kuning */}
+                  <linearGradient id="colorLaba" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#facc15" stopOpacity={0.6}/>
+                    <stop offset="95%" stopColor="#facc15" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                <XAxis dataKey="tanggal" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
+                <YAxis 
+                  stroke="#64748b" 
+                  fontSize={11} 
+                  tickLine={false} 
+                  axisLine={false} 
+                  tickFormatter={(value) => value >= 1000 ? `Rp${value / 1000}k` : value} 
+                />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#0f172a', borderColor: '#2563eb', borderRadius: '8px', fontSize: '12px', color: '#fff' }}
+                  itemStyle={{ color: '#facc15', fontWeight: 'bold' }}
+                  formatter={(value) => [formatRp(value), 'Keuntungan']}
+                  labelFormatter={(label) => `Tanggal ${label} ${formatBulanTeks(filterBulan)}`}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="laba" 
+                  stroke="#facc15" 
+                  strokeWidth={3} 
+                  fillOpacity={1} 
+                  fill="url(#colorLaba)" 
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* GRID KONTEN BAWAH (Kategori & Pelanggan) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-10">
           
-          {/* KOLOM KATEGORI */}
+          {/* KOLOM KIRI: KATEGORI */}
           <div className="lg:col-span-4 bg-[#111] p-4 md:p-5 rounded-xl border border-blue-900 h-fit">
-            <h4 className="font-bold mb-4 md:mb-5 flex items-center gap-2">📈 Keuntungan per Kategori</h4>
+            <h4 className="font-bold mb-4 md:mb-5 flex items-center gap-2">📊 Keuntungan per Kategori</h4>
             {kategori.length === 0 && <p className="text-gray-500 text-sm">Belum ada transaksi di bulan ini.</p>}
             {kategori.map(([nama, data], i) => (
               <div key={i} className="mb-3 md:mb-4 border-b border-blue-900/50 pb-3 last:border-0 last:mb-0 last:pb-0">
@@ -183,7 +252,7 @@ export default function Dashboard() {
             <div className="p-4 border-b border-blue-900 flex flex-col md:flex-row md:justify-between md:items-center gap-3 bg-[#0a0a0a] shrink-0">
               <h4 className="font-bold flex items-center gap-2">🏆 Top Pelanggan Setia</h4>
               
-              <div className="flex flex-wrap md:flex-nowrap items-center gap-2">
+              <div className="flex flex-wrap md:flex-nowrap items-center gap-2 print:hidden">
                 <select value={sortPelanggan} onChange={(e) => setSortPelanggan(e.target.value)} className="bg-black border border-blue-600 text-blue-400 font-semibold px-3 py-1.5 rounded outline-none text-xs md:text-sm cursor-pointer flex-1 md:flex-none">
                   <option value="terbanyak">Terbanyak</option>
                   <option value="terdikit">Terdikit</option>
@@ -197,7 +266,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="overflow-auto max-h-[400px] relative">
+            <div className="overflow-auto max-h-[400px] relative print:max-h-none">
               <table className="w-full text-xs md:text-sm text-left whitespace-nowrap">
                 <thead className="text-gray-400 bg-[#0a0a0a] sticky top-0 z-10 border-b border-blue-900">
                   <tr>
