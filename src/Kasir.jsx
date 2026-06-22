@@ -101,7 +101,10 @@ export default function Kasir() {
   const formatRp = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
   const formatTanggal = (dateStr) => {
     const date = new Date(dateStr);
-    return { baris1: `${date.toLocaleDateString('id-ID', { weekday: 'long' })}, ${date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}`, baris2: `${date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB` };
+    return { 
+      baris1: `${date.toLocaleDateString('id-ID', { weekday: 'long' })}, ${date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}`, 
+      baris2: `${date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB` 
+    };
   };
 
   // Filter produk berdasarkan yang diketik user
@@ -111,28 +114,38 @@ export default function Kasir() {
   );
 
   return (
-    <div className="flex h-screen bg-[#161925] text-white font-sans overflow-hidden">
+    <div className="flex h-screen bg-black text-white font-sans overflow-hidden">
       <Sidebar active="kasir" />
 
       {/* MAIN CONTENT */}
-      <div className="flex-1 p-6 overflow-y-auto relative">
-        <div className={`border rounded-xl mb-6 shadow-sm transition-colors duration-300 ${editId ? 'bg-[#2a2119] border-yellow-600' : 'bg-[#1e2230] border-[#2d3345]'}`}>
-          <div className={`px-6 py-4 border-b ${editId ? 'border-yellow-600' : 'border-[#2d3345]'}`}>
-            <h3 className={`font-bold text-lg flex items-center gap-2 ${editId ? 'text-yellow-500' : 'text-white'}`}>
-              {editId ? '✏️ Ubah Data Transaksi' : '📄 Catat Transaksi Baru'}
+      {/* Ditambahkan pt-20 untuk jarak tombol menu di HP */}
+      <div className="flex-1 p-5 md:p-8 overflow-y-auto relative pt-20 md:pt-8 w-full">
+        
+        {/* HEADER */}
+        <div className="mb-6">
+          <h2 className="text-2xl md:text-3xl font-bold text-white">Layar Kasir</h2>
+          <p className="text-gray-400 text-sm md:text-base">Catat transaksi penjualan top-up kamu di sini.</p>
+        </div>
+
+        {/* KOTAK FORMULIR */}
+        <div className={`border-2 rounded-xl mb-8 shadow-sm transition-all duration-300 ${editId ? 'bg-[#111] border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.2)]' : 'bg-[#111] border-blue-900'}`}>
+          <div className={`px-5 py-4 border-b-2 ${editId ? 'border-yellow-400' : 'border-blue-900'}`}>
+            <h3 className={`font-bold text-lg flex items-center gap-2 ${editId ? 'text-yellow-400 drop-shadow-[0_0_5px_rgba(250,204,21,0.8)]' : 'text-cyan-400'}`}>
+              {editId ? '✏️ Sedang Mengubah Transaksi...' : '📄 Catat Transaksi Baru'}
             </h3>
           </div>
           
-          <div className="p-6">
-            <div className="grid grid-cols-4 gap-6 mb-6">
+          <div className="p-5">
+            {/* GRID 1 Kolom (HP), 2 Kolom (Tablet), 4 Kolom (Laptop) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-5">
               <div>
-                <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wide">Tanggal</label>
-                <input type="date" name="tanggal" value={form.tanggal} onChange={handleInputChange} disabled={editId !== null} className="w-full bg-[#161925] border border-[#2d3345] text-white p-3 rounded outline-none focus:border-[#0dcaf0] transition disabled:opacity-50" />
+                <label className="block text-xs font-bold text-blue-300 mb-2 uppercase tracking-wide">Tanggal</label>
+                <input type="date" name="tanggal" value={form.tanggal} onChange={handleInputChange} disabled={editId !== null} className="w-full bg-black border border-blue-600 text-white p-3 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] transition disabled:opacity-50" />
               </div>
               
               {/* KOLOM PILIH PRODUK (SEARCHABLE DROPDOWN) */}
               <div className="relative">
-                <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wide">Pilih Produk</label>
+                <label className="block text-xs font-bold text-blue-300 mb-2 uppercase tracking-wide">Pilih Produk</label>
                 <input 
                   type="text" 
                   placeholder="🔍 Ketik nama / kode..." 
@@ -142,23 +155,22 @@ export default function Kasir() {
                     setShowDropdown(true);
                   }}
                   onFocus={() => setShowDropdown(true)}
-                  // Delay agar event onClick di daftar menu sempat dieksekusi sebelum hilang
                   onBlur={() => setTimeout(() => setShowDropdown(false), 200)} 
-                  className="w-full bg-[#161925] border border-[#2d3345] text-white p-3 rounded outline-none focus:border-[#0dcaf0] transition"
+                  className="w-full bg-black border border-blue-600 text-white p-3 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] transition"
                 />
                 
-                {/* MENU DAFTAR PRODUK (Tampil saat diklik/diketik) */}
+                {/* MENU DAFTAR PRODUK */}
                 {showDropdown && (
-                  <ul className="absolute z-50 w-full bg-[#161925] border border-[#2d3345] mt-1 rounded-lg shadow-2xl max-h-60 overflow-y-auto">
+                  <ul className="absolute z-50 w-full bg-black border-2 border-blue-600 mt-1 rounded-lg shadow-[0_0_15px_rgba(37,99,235,0.5)] max-h-60 overflow-y-auto">
                     {filteredProducts.length > 0 ? (
                       filteredProducts.map(prod => (
                         <li 
                           key={prod.id} 
                           onClick={() => handleSelectProduct(prod)}
-                          className="p-3 border-b border-[#2d3345] hover:bg-[#2d3345] cursor-pointer transition"
+                          className="p-3 border-b border-blue-900 hover:bg-blue-900 cursor-pointer transition"
                         >
                           <div className="font-bold text-white text-sm">{prod.nama_barang}</div>
-                          <div className="text-[10px] text-[#0dcaf0] font-mono mt-0.5">{prod.kode_barang}</div>
+                          <div className="text-[10px] text-yellow-400 font-mono mt-0.5">{prod.kode_barang}</div>
                         </li>
                       ))
                     ) : (
@@ -169,44 +181,86 @@ export default function Kasir() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wide">Target ID / Akun</label>
-                <input type="text" name="target_id" value={form.target_id} onChange={handleInputChange} placeholder="Contoh: 12345678" className="w-full bg-[#161925] border border-[#2d3345] text-white p-3 rounded outline-none focus:border-[#0dcaf0] transition" />
+                <label className="block text-xs font-bold text-blue-300 mb-2 uppercase tracking-wide">Target ID / Akun</label>
+                <input type="text" name="target_id" value={form.target_id} onChange={handleInputChange} placeholder="Contoh: 12345678" className="w-full bg-black border border-blue-600 text-white p-3 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] transition" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wide">Uang Modal (Rp)</label>
-                <input type="number" name="modal_saat_transaksi" value={form.modal_saat_transaksi} onChange={handleInputChange} placeholder="0" className="w-full bg-[#161925] border border-[#2d3345] text-gray-400 p-3 rounded outline-none focus:border-[#0dcaf0] transition" />
+                <label className="block text-xs font-bold text-blue-300 mb-2 uppercase tracking-wide">Uang Modal (Rp)</label>
+                <input type="number" name="modal_saat_transaksi" value={form.modal_saat_transaksi} onChange={handleInputChange} placeholder="0" className="w-full bg-black border border-blue-600 text-gray-300 p-3 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] transition" />
               </div>
             </div>
 
-            <div className="flex items-end gap-4">
-              <div className="w-[23%]">
-                <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wide">Harga Jual (Rp)</label>
-                <input type="number" name="harga_jual_saat_transaksi" value={form.harga_jual_saat_transaksi} onChange={handleInputChange} placeholder="0" className="w-full bg-[#161925] border border-[#2d3345] text-white font-bold p-3 rounded outline-none focus:border-[#0dcaf0] transition" />
+            {/* BARIS BAWAH FORM */}
+            <div className="flex flex-col md:flex-row items-end gap-4">
+              <div className="w-full md:w-1/4">
+                <label className="block text-xs font-bold text-blue-300 mb-2 uppercase tracking-wide">Harga Jual (Rp)</label>
+                <input type="number" name="harga_jual_saat_transaksi" value={form.harga_jual_saat_transaksi} onChange={handleInputChange} placeholder="0" className="w-full bg-black border border-blue-600 text-white font-bold p-3 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] transition" />
               </div>
-              <button onClick={handleSimpan} className={`flex-1 font-bold text-lg p-3 rounded transition flex items-center justify-center gap-2 ${editId ? 'bg-yellow-500 hover:bg-yellow-600 text-black' : 'bg-[#0dcaf0] hover:bg-cyan-400 text-[#161925]'}`}>{editId ? '💾 Simpan Perubahan' : '💾 Simpan ke Buku Kasir'}</button>
-              {editId && <button onClick={() => { setEditId(null); setForm({...form, kode_barang: '', target_id: '', modal_saat_transaksi: '', harga_jual_saat_transaksi: ''}); setSearchTerm(''); }} className="bg-gray-600 hover:bg-gray-500 text-white font-bold text-lg p-3 rounded px-6 transition">Batal</button>}
+              
+              <div className="flex flex-col md:flex-row gap-3 w-full md:flex-1">
+                <button onClick={handleSimpan} className={`w-full md:flex-1 font-bold text-base md:text-lg p-3 rounded-lg transition-transform active:scale-95 flex items-center justify-center gap-2 ${editId ? 'bg-yellow-400 hover:bg-yellow-500 text-black shadow-[0_0_10px_#facc15]' : 'bg-cyan-400 hover:bg-cyan-300 text-black shadow-[0_0_10px_#22d3ee]'}`}>
+                  {editId ? '💾 Simpan Perubahan' : '💾 Simpan ke Buku Kasir'}
+                </button>
+                {editId && (
+                  <button onClick={() => { setEditId(null); setForm({...form, kode_barang: '', target_id: '', modal_saat_transaksi: '', harga_jual_saat_transaksi: ''}); setSearchTerm(''); }} className="w-full md:w-auto bg-transparent border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white font-bold text-base md:text-lg p-3 rounded-lg transition px-6 active:scale-95">
+                    Batal
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
         {/* TABEL RIWAYAT TRANSAKSI */}
-        <div className="bg-[#1e2230] border border-[#2d3345] rounded-xl shadow-sm">
-          <div className="overflow-x-auto pb-20">
-            <table className="w-full text-sm text-left">
-              <thead className="text-white text-xs bg-[#161925] border-b border-[#2d3345]"><tr><th className="px-6 py-4 font-bold w-12">#</th><th className="px-6 py-4 font-bold">Hari, Tanggal</th><th className="px-6 py-4 font-bold">Target ID</th><th className="px-6 py-4 font-bold">Produk</th><th className="px-6 py-4 font-bold">Modal</th><th className="px-6 py-4 font-bold">Jual</th><th className="px-6 py-4 font-bold">Keuntungan</th><th className="px-6 py-4 font-bold text-center">Aksi</th></tr></thead>
+        <h3 className="font-bold text-lg mb-3 flex items-center gap-2 text-white">🗂️ Riwayat Transaksi Terakhir</h3>
+        <div className="bg-[#111] border border-blue-900 rounded-xl overflow-hidden shadow-sm">
+          <div className="overflow-x-auto pb-4">
+            <table className="w-full text-xs md:text-sm text-left whitespace-nowrap">
+              <thead className="text-gray-400 bg-[#0a0a0a] border-b-2 border-blue-900">
+                <tr>
+                  <th className="px-4 py-4 font-bold w-10 text-center">#</th>
+                  <th className="px-4 py-4 font-bold">Hari, Tanggal</th>
+                  <th className="px-4 py-4 font-bold">Target ID</th>
+                  <th className="px-4 py-4 font-bold">Produk</th>
+                  <th className="px-4 py-4 font-bold">Modal</th>
+                  <th className="px-4 py-4 font-bold">Jual</th>
+                  <th className="px-4 py-4 font-bold">Keuntungan</th>
+                  <th className="px-4 py-4 font-bold text-center">Aksi</th>
+                </tr>
+              </thead>
               <tbody>
+                {transactions.length === 0 && (
+                  <tr><td colSpan="8" className="text-center p-6 text-gray-500">Belum ada transaksi tersimpan.</td></tr>
+                )}
                 {transactions.map((trx, index) => {
-                  const waktu = formatTanggal(trx.created_at); const keuntungan = Number(trx.harga_jual_saat_transaksi) - Number(trx.modal_saat_transaksi);
+                  const waktu = formatTanggal(trx.created_at); 
+                  const keuntungan = Number(trx.harga_jual_saat_transaksi) - Number(trx.modal_saat_transaksi);
                   return (
-                    <tr key={trx.id || index} className="border-b border-[#2d3345] hover:bg-[#1a1e2b] transition">
-                      <td className="px-6 py-4 font-bold text-gray-400">{index + 1}</td>
-                      <td className="px-6 py-4"><div className="font-bold text-white">{waktu.baris1}</div><div className="text-[11px] text-gray-400">{waktu.baris2}</div></td>
-                      <td className="px-6 py-4 font-bold text-white">{trx.target_id}</td>
-                      <td className="px-6 py-4"><span className="bg-slate-700 text-[10px] px-2 py-0.5 rounded text-[#0dcaf0] font-bold font-mono inline-block">{trx.kode_barang}</span></td>
-                      <td className="px-6 py-4 text-gray-300">{formatRp(trx.modal_saat_transaksi)}</td>
-                      <td className="px-6 py-4 font-bold text-white">{formatRp(trx.harga_jual_saat_transaksi)}</td>
-                      <td className="px-6 py-4 font-bold text-emerald-400">+ {formatRp(keuntungan)}</td>
-                      <td className="px-6 py-4"><div className="flex gap-2 justify-center"><button onClick={() => handleEdit(trx)} className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-xs px-3 py-1.5 rounded transition">Ubah</button><button onClick={() => handleHapus(trx.id)} className="bg-red-500 hover:bg-red-600 text-white font-bold text-xs px-3 py-1.5 rounded transition">Hapus</button></div></td>
+                    <tr key={trx.id || index} className="border-b border-blue-900/40 hover:bg-blue-900/20 transition-colors">
+                      <td className="px-4 py-3 font-bold text-gray-500 text-center">{index + 1}</td>
+                      <td className="px-4 py-3">
+                        <div className="font-bold text-white text-xs md:text-sm">{waktu.baris1}</div>
+                        <div className="text-[10px] md:text-[11px] text-gray-400 mt-0.5">{waktu.baris2}</div>
+                      </td>
+                      <td className="px-4 py-3 font-bold text-white">{trx.target_id}</td>
+                      <td className="px-4 py-3">
+                        <span className="bg-blue-900/50 border border-blue-600 text-[9px] md:text-[10px] px-2 py-1 rounded text-cyan-400 font-bold font-mono inline-block">
+                          {trx.kode_barang}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-gray-400">{formatRp(trx.modal_saat_transaksi)}</td>
+                      <td className="px-4 py-3 font-bold text-white">{formatRp(trx.harga_jual_saat_transaksi)}</td>
+                      <td className="px-4 py-3 font-bold text-emerald-400">+ {formatRp(keuntungan)}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex gap-2 justify-center">
+                          <button onClick={() => handleEdit(trx)} className="bg-transparent border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black font-bold text-[10px] md:text-xs px-3 py-1.5 rounded transition">
+                            Ubah
+                          </button>
+                          <button onClick={() => handleHapus(trx.id)} className="bg-transparent border border-red-500 text-red-500 hover:bg-red-500 hover:text-white font-bold text-[10px] md:text-xs px-3 py-1.5 rounded transition">
+                            Hapus
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   )
                 })}

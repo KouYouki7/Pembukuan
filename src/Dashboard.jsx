@@ -101,92 +101,104 @@ export default function Dashboard() {
   };
 
   return (
-    // Tambahkan print:bg-white print:text-black dll agar format kertas menjadi putih
-    <div className="flex h-screen bg-[#161925] text-white font-sans overflow-hidden print:bg-white print:text-black print:h-auto print:block">
+    <div className="flex h-screen bg-black text-white font-sans overflow-hidden">
       <Sidebar active="dashboard" />
 
       {/* MAIN CONTENT */}
-      <div className="flex-1 p-8 overflow-y-auto print:p-0 print:overflow-visible">
+      {/* Tambahkan pt-20 di HP agar tidak tertutup tombol Menu */}
+      <div className="flex-1 p-5 md:p-8 overflow-y-auto pt-20 md:pt-8 w-full">
         
         {/* HEADER */}
-        <div className="mb-8 print:mb-4">
-          <h2 className="text-3xl font-bold">Laporan Penjualan YAGEZ STORE</h2>
-          <p className="text-gray-400 print:text-gray-600">Dicetak pada: {new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
+        <div className="mb-6 md:mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold">Laporan Penjualan</h2>
+          <p className="text-gray-400 text-sm md:text-base">Ringkasan performa penjualan tokomu.</p>
         </div>
 
-        {/* 4 KOTAK STATISTIK */}
-        <div className="grid grid-cols-4 gap-4 mb-6">
+        {/* 4 KOTAK STATISTIK - Menjadi 2 kolom di HP, 4 kolom di Laptop */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
           {[ 
             { t: 'UNTUNG HARI INI', v: stats.hari, c: 'text-[#0dcaf0]' }, 
             { t: 'UNTUNG MINGGU INI', v: stats.minggu, c: 'text-yellow-400' }, 
             { t: 'UNTUNG BULAN INI', v: stats.bulan, c: 'text-emerald-400' }, 
-            { t: 'TOTAL ORDERAN', v: `${stats.total} Sukses`, c: 'text-white print:text-black' } 
+            { t: 'TOTAL ORDERAN', v: `${stats.total} Sukses`, c: 'text-white' } 
           ].map((item, i) => (
-            <div key={i} className="bg-[#1e2230] print:bg-white print:border-gray-300 p-4 rounded-xl border border-[#2d3345]">
-              <p className="text-[10px] text-gray-400 print:text-gray-500 tracking-widest">{item.t}</p>
-              <h3 className={`text-2xl font-bold mt-2 ${item.c} print:text-black`}>{typeof item.v === 'number' ? formatRp(item.v) : item.v}</h3>
+            <div key={i} className="bg-[#111] p-3 md:p-4 rounded-xl border border-blue-900 hover:border-blue-600 transition-colors">
+              <p className="text-[9px] md:text-[10px] text-gray-400 tracking-widest">{item.t}</p>
+              <h3 className={`text-lg md:text-2xl font-bold mt-1 md:mt-2 ${item.c}`}>{typeof item.v === 'number' ? formatRp(item.v) : item.v}</h3>
             </div>
           ))}
         </div>
 
-        {/* BAR DETAIL LAPORAN BULANAN (Sembunyikan filter saat diprint) */}
-        <div className="bg-[#1e2230] print:bg-white print:border-gray-300 print:shadow-none p-4 rounded-xl border border-[#2d3345] mb-6 flex justify-between items-center shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="bg-[#2d3345] print:bg-gray-100 p-3 rounded-lg text-xl">📊</div>
+        {/* BAR DETAIL LAPORAN BULANAN */}
+        {/* Di HP flex-col (numpuk ke bawah), di Laptop flex-row (bersampingan) */}
+        <div className="bg-[#111] p-4 rounded-xl border border-blue-900 mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+          <div className="flex items-center gap-3 md:gap-4">
+            <div className="bg-blue-900/40 border border-blue-600 p-2 md:p-3 rounded-lg text-xl">📊</div>
             <div>
-              <h3 className="font-bold text-lg leading-tight">Detail Laporan Bulanan</h3>
-              <p className="text-[#0dcaf0] print:text-gray-600 text-sm font-bold">Periode Filter: {formatBulanTeks(filterBulan)}</p>
+              <h3 className="font-bold text-base md:text-lg leading-tight">Detail Laporan Bulanan</h3>
+              <p className="text-yellow-400 text-xs md:text-sm font-bold">Periode: {formatBulanTeks(filterBulan)}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 print:hidden">
-            <label className="text-gray-400 text-sm font-bold">Filter Bulan:</label>
-            <input type="month" value={filterBulan} onChange={(e) => setFilterBulan(e.target.value)} className="bg-[#161925] border border-[#2d3345] px-3 py-2 rounded-lg outline-none text-white focus:border-[#0dcaf0] transition cursor-pointer" />
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <label className="text-gray-400 text-xs md:text-sm font-bold whitespace-nowrap">Filter Bulan:</label>
+            <input 
+              type="month" 
+              value={filterBulan} 
+              onChange={(e) => setFilterBulan(e.target.value)} 
+              className="bg-black border border-blue-600 px-3 py-2 rounded-lg outline-none text-white focus:border-yellow-400 transition cursor-pointer w-full md:w-auto" 
+            />
           </div>
         </div>
 
-        <div className="grid grid-cols-12 gap-6 pb-10 print:block">
+        {/* GRID KONTEN BAWAH - Di HP 1 kolom, di Laptop 12 Kolom */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-10">
           
           {/* KOLOM KIRI: KATEGORI */}
-          <div className="col-span-4 bg-[#1e2230] print:bg-white print:border-gray-300 p-5 rounded-xl border border-[#2d3345] h-fit print:mb-6">
-            <h4 className="font-bold mb-5 flex items-center gap-2">📈 Keuntungan per Kategori</h4>
+          <div className="lg:col-span-4 bg-[#111] p-4 md:p-5 rounded-xl border border-blue-900 h-fit">
+            <h4 className="font-bold mb-4 md:mb-5 flex items-center gap-2">📈 Keuntungan per Kategori</h4>
             {kategori.length === 0 && <p className="text-gray-500 text-sm">Belum ada transaksi di bulan ini.</p>}
             {kategori.map(([nama, data], i) => (
-              <div key={i} className="mb-4 border-b border-[#2d3345] print:border-gray-200 pb-3 last:border-0 last:mb-0 last:pb-0">
+              <div key={i} className="mb-3 md:mb-4 border-b border-blue-900/50 pb-3 last:border-0 last:mb-0 last:pb-0">
                 <div className="flex justify-between mb-1 items-center">
-                  <span className="font-bold text-sm flex items-center gap-2"><span className="text-lg">{getIconKategori(nama)}</span> {nama}</span>
-                  <span className="bg-blue-900 print:bg-gray-200 print:text-black text-blue-300 text-[10px] px-2 py-0.5 rounded-full font-bold">{data.order}x Order</span>
+                  <span className="font-bold text-xs md:text-sm flex items-center gap-2"><span className="text-base md:text-lg">{getIconKategori(nama)}</span> {nama}</span>
+                  <span className="bg-blue-900/50 border border-blue-600 text-blue-300 text-[9px] md:text-[10px] px-2 py-0.5 rounded-full font-bold">{data.order}x Order</span>
                 </div>
-                <div className="flex justify-between text-sm mt-2">
-                  <span className="text-gray-400 print:text-gray-600 text-xs">Total Laba:</span> 
-                  <span className="text-emerald-400 print:text-black font-bold">+ {formatRp(data.laba)}</span>
+                <div className="flex justify-between text-xs md:text-sm mt-2">
+                  <span className="text-gray-400">Total Laba:</span> 
+                  <span className="text-emerald-400 font-bold">+ {formatRp(data.laba)}</span>
                 </div>
               </div>
             ))}
           </div>
 
           {/* KOLOM KANAN: TOP PELANGGAN */}
-          <div className="col-span-8 bg-[#1e2230] print:bg-white print:border-gray-300 rounded-xl border border-[#2d3345] overflow-hidden flex flex-col print:border-0">
-            <div className="p-4 border-b border-[#2d3345] print:border-gray-300 flex justify-between items-center bg-[#1a1e2b] print:bg-white print:p-0 print:mb-4 shrink-0">
-              <h4 className="font-bold flex items-center gap-2">🏆 Data Pelanggan</h4>
-              {/* Sembunyikan form filter saat diprint */}
-              <div className="flex items-center gap-2 print:hidden">
-                <select value={sortPelanggan} onChange={(e) => setSortPelanggan(e.target.value)} className="bg-[#161925] border border-[#0dcaf0] text-[#0dcaf0] font-semibold px-3 py-1.5 rounded outline-none text-sm cursor-pointer"><option value="terbanyak">Terbanyak</option><option value="terdikit">Terdikit</option><option value="sultan">Sultan</option></select>
-                <input type="text" placeholder="Cari ID..." value={searchTarget} onChange={(e) => setSearchTarget(e.target.value)} className="bg-[#161925] border border-[#2d3345] px-3 py-1.5 rounded text-sm w-32 outline-none focus:border-[#0dcaf0] transition placeholder-gray-600" />
-                <button onClick={() => setAppliedSearch(searchTarget)} className="bg-blue-600 hover:bg-blue-700 px-4 py-1.5 rounded text-sm font-bold transition">Cari</button>
-                <button onClick={() => { setSearchTarget(''); setAppliedSearch(''); }} className="bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded text-sm font-bold transition flex items-center justify-center">✕</button>
+          <div className="lg:col-span-8 bg-[#111] rounded-xl border border-blue-900 overflow-hidden flex flex-col">
+            <div className="p-4 border-b border-blue-900 flex flex-col md:flex-row md:justify-between md:items-center gap-3 bg-[#0a0a0a] shrink-0">
+              <h4 className="font-bold flex items-center gap-2">🏆 Top Pelanggan Setia</h4>
+              
+              <div className="flex flex-wrap md:flex-nowrap items-center gap-2">
+                <select value={sortPelanggan} onChange={(e) => setSortPelanggan(e.target.value)} className="bg-black border border-blue-600 text-blue-400 font-semibold px-3 py-1.5 rounded outline-none text-xs md:text-sm cursor-pointer flex-1 md:flex-none">
+                  <option value="terbanyak">Terbanyak</option>
+                  <option value="terdikit">Terdikit</option>
+                  <option value="sultan">Sultan</option>
+                </select>
+                <div className="flex items-center gap-2 w-full md:w-auto">
+                  <input type="text" placeholder="Cari ID..." value={searchTarget} onChange={(e) => setSearchTarget(e.target.value)} className="bg-black border border-blue-600 px-3 py-1.5 rounded text-xs md:text-sm w-full md:w-32 outline-none focus:border-yellow-400 transition placeholder-gray-600" />
+                  <button onClick={() => setAppliedSearch(searchTarget)} className="bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded text-xs md:text-sm font-bold transition">Cari</button>
+                  <button onClick={() => { setSearchTarget(''); setAppliedSearch(''); }} className="bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded text-xs md:text-sm font-bold transition">✕</button>
+                </div>
               </div>
             </div>
 
-            {/* Hilangkan scroll-y (overflow-auto max-h-[400px]) khusus saat mode print agar tampil semua baris */}
-            <div className="overflow-auto max-h-[400px] print:max-h-none print:overflow-visible relative">
-              <table className="w-full text-sm text-left border-collapse print:border print:border-gray-300">
-                <thead className="text-gray-400 bg-[#161925] print:bg-gray-100 print:text-black sticky top-0 z-10 shadow-md print:shadow-none">
+            <div className="overflow-auto max-h-[400px] relative">
+              <table className="w-full text-xs md:text-sm text-left whitespace-nowrap">
+                <thead className="text-gray-400 bg-[#0a0a0a] sticky top-0 z-10 border-b border-blue-900">
                   <tr>
-                    <th className="p-4 font-bold w-12 border-b border-[#2d3345] print:border-gray-300">#</th>
-                    <th className="p-4 font-bold border-b border-[#2d3345] print:border-gray-300">Target ID / Akun</th>
-                    <th className="p-4 font-bold text-center border-b border-[#2d3345] print:border-gray-300">Order</th>
-                    <th className="p-4 font-bold border-b border-[#2d3345] print:border-gray-300">Total Belanja</th>
-                    <th className="p-4 font-bold border-b border-[#2d3345] print:border-gray-300">Keuntungan</th>
+                    <th className="p-3 md:p-4 font-bold w-10">#</th>
+                    <th className="p-3 md:p-4 font-bold">Target ID / Akun</th>
+                    <th className="p-3 md:p-4 font-bold text-center">Order</th>
+                    <th className="p-3 md:p-4 font-bold">Total Belanja</th>
+                    <th className="p-3 md:p-4 font-bold">Keuntungan</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -194,14 +206,14 @@ export default function Dashboard() {
                     <tr><td colSpan="5" className="text-center p-6 text-gray-500">Data tidak ditemukan.</td></tr>
                   )}
                   {pelanggan.map(([id, d], i) => (
-                    <tr key={id} className="border-b border-[#2d3345] print:border-gray-300 hover:bg-[#1a1e2b] print:hover:bg-transparent transition">
-                      <td className="p-4 font-bold text-gray-400 print:text-black">{i + 1}</td>
-                      <td className="p-4 font-bold text-white print:text-black">{id}</td>
-                      <td className="p-4 text-center">
-                        <span className="bg-slate-700 print:bg-gray-200 print:text-black text-gray-200 px-2.5 py-1 rounded-full text-xs font-bold">{d.order}x</span>
+                    <tr key={id} className="border-b border-blue-900/30 hover:bg-blue-900/20 transition">
+                      <td className="p-3 md:p-4 font-bold text-gray-500">{i + 1}</td>
+                      <td className="p-3 md:p-4 font-bold text-white">{id}</td>
+                      <td className="p-3 md:p-4 text-center">
+                        <span className="bg-blue-900/40 border border-blue-600 text-yellow-400 px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold">{d.order}x</span>
                       </td>
-                      <td className="p-4 text-gray-300 print:text-black">{formatRp(d.belanja)}</td>
-                      <td className="p-4 text-emerald-400 print:text-black font-bold">+ {formatRp(d.laba)}</td>
+                      <td className="p-3 md:p-4 text-gray-400">{formatRp(d.belanja)}</td>
+                      <td className="p-3 md:p-4 text-emerald-400 font-bold">+ {formatRp(d.laba)}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -60,7 +60,7 @@ export default function Produk() {
     fetchProducts();
   };
 
-  // === FITUR AUTO-SCROLL DITAMBAHKAN DI SINI ===
+  // === FITUR AUTO-SCROLL ===
   const handleEdit = (prod) => {
     setForm({
       kategori: prod.kategori || '',
@@ -97,105 +97,127 @@ export default function Produk() {
   }, {});
 
   return (
-    <div className="flex h-screen bg-[#161925] text-white font-sans overflow-hidden">
+    <div className="flex h-screen bg-black text-white font-sans overflow-hidden">
       {/* SIDEBAR */}
       <Sidebar active="produk" />
 
       {/* MAIN CONTENT */}
-      <div className="flex-1 p-6 overflow-y-auto relative scroll-smooth">
+      {/* Ditambahkan pt-20 untuk jarak tombol menu di HP */}
+      <div className="flex-1 p-5 md:p-8 overflow-y-auto relative scroll-smooth pt-20 md:pt-8 w-full">
         
-        {/* FORM KELOLA PRODUK (Diberi ID 'area-form' sebagai target scroll) */}
+        {/* HEADER */}
+        <div className="mb-6">
+          <h2 className="text-2xl md:text-3xl font-bold text-white">Kelola Produk</h2>
+          <p className="text-gray-400 text-sm md:text-base">Daftar harga modal dan harga jual produk tokomu.</p>
+        </div>
+
+        {/* FORM KELOLA PRODUK */}
         <div 
           id="area-form" 
-          className={`border rounded-xl mb-6 shadow-sm transition-all duration-500 ${editId ? 'bg-[#2a2119] border-yellow-600 shadow-yellow-900/20' : 'bg-[#1e2230] border-[#2d3345]'}`}
+          className={`border-2 rounded-xl mb-8 shadow-sm transition-all duration-500 ${editId ? 'bg-[#111] border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.2)]' : 'bg-[#111] border-blue-900'}`}
         >
-          <div className={`px-6 py-4 border-b ${editId ? 'border-yellow-600' : 'border-[#2d3345]'}`}>
-            <h3 className={`font-bold text-lg flex items-center gap-2 ${editId ? 'text-yellow-500' : 'text-white'}`}>
+          <div className={`px-5 py-4 border-b-2 ${editId ? 'border-yellow-400' : 'border-blue-900'}`}>
+            <h3 className={`font-bold text-lg flex items-center gap-2 ${editId ? 'text-yellow-400 drop-shadow-[0_0_5px_rgba(250,204,21,0.8)]' : 'text-cyan-400'}`}>
               {editId ? '✏️ Ubah Data Produk' : '📦 Tambah Produk Baru'}
             </h3>
           </div>
-          <div className="p-6">
-            <div className="grid grid-cols-5 gap-4 items-end mb-4">
+          
+          <div className="p-5">
+            {/* GRID: 1 Kolom di HP, 2 di Tablet, 5 di Laptop */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-5">
               <div>
-                <label className="block text-xs font-bold text-gray-400 mb-2 uppercase">Kategori</label>
-                <input type="text" name="kategori" value={form.kategori} onChange={handleInputChange} placeholder="Cth: FREE FIRE" className="w-full bg-[#161925] border border-[#2d3345] p-3 rounded outline-none focus:border-[#0dcaf0] uppercase transition" />
+                <label className="block text-xs font-bold text-blue-300 mb-2 uppercase tracking-wide">Kategori</label>
+                <input type="text" name="kategori" value={form.kategori} onChange={handleInputChange} placeholder="Cth: FREE FIRE" className="w-full bg-black border border-blue-600 text-white p-3 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] uppercase transition" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-400 mb-2 uppercase">Kode Produk</label>
-                <input type="text" name="kode_barang" value={form.kode_barang} onChange={handleInputChange} placeholder="Cth: FF70" className="w-full bg-[#161925] border border-[#2d3345] p-3 rounded outline-none focus:border-[#0dcaf0] transition" />
+                <label className="block text-xs font-bold text-blue-300 mb-2 uppercase tracking-wide">Kode Produk</label>
+                <input type="text" name="kode_barang" value={form.kode_barang} onChange={handleInputChange} placeholder="Cth: FF70" className="w-full bg-black border border-blue-600 text-white p-3 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] uppercase transition" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-400 mb-2 uppercase">Nama Produk</label>
-                <input type="text" name="nama_barang" value={form.nama_barang} onChange={handleInputChange} placeholder="Cth: DM FREE FIRE 70" className="w-full bg-[#161925] border border-[#2d3345] p-3 rounded outline-none focus:border-[#0dcaf0] transition" />
+                <label className="block text-xs font-bold text-blue-300 mb-2 uppercase tracking-wide">Nama Produk</label>
+                <input type="text" name="nama_barang" value={form.nama_barang} onChange={handleInputChange} placeholder="Cth: DM FREE FIRE 70" className="w-full bg-black border border-blue-600 text-white p-3 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] transition" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-400 mb-2 uppercase">Modal (Rp)</label>
-                <input type="number" name="modal" value={form.modal} onChange={handleInputChange} placeholder="0" className="w-full bg-[#161925] border border-[#2d3345] p-3 rounded outline-none focus:border-[#0dcaf0] transition" />
+                <label className="block text-xs font-bold text-blue-300 mb-2 uppercase tracking-wide">Modal (Rp)</label>
+                <input type="number" name="modal" value={form.modal} onChange={handleInputChange} placeholder="0" className="w-full bg-black border border-blue-600 text-gray-300 p-3 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] transition" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-400 mb-2 uppercase">Jual (Rp)</label>
-                <input type="number" name="harga_jual" value={form.harga_jual} onChange={handleInputChange} placeholder="0" className="w-full bg-[#161925] border border-[#2d3345] p-3 rounded outline-none focus:border-[#0dcaf0] transition" />
+                <label className="block text-xs font-bold text-blue-300 mb-2 uppercase tracking-wide">Jual (Rp)</label>
+                <input type="number" name="harga_jual" value={form.harga_jual} onChange={handleInputChange} placeholder="0" className="w-full bg-black border border-blue-600 text-white font-bold p-3 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] transition" />
               </div>
             </div>
-            <div className="flex gap-2">
-              <button onClick={handleSimpan} className={`flex-1 font-bold p-3 rounded transition ${editId ? 'bg-yellow-500 hover:bg-yellow-600 text-black' : 'bg-[#0dcaf0] hover:bg-cyan-400 text-[#161925]'}`}>
+            
+            <div className="flex flex-col md:flex-row gap-3 w-full">
+              <button onClick={handleSimpan} className={`w-full md:flex-1 font-bold text-base md:text-lg p-3 rounded-lg transition-transform active:scale-95 flex items-center justify-center gap-2 ${editId ? 'bg-yellow-400 hover:bg-yellow-500 text-black shadow-[0_0_10px_#facc15]' : 'bg-cyan-400 hover:bg-cyan-300 text-black shadow-[0_0_10px_#22d3ee]'}`}>
                 {editId ? '💾 Simpan Perubahan Produk' : '➕ Tambahkan ke Daftar Jualan'}
               </button>
               {editId && (
-                <button onClick={() => { setEditId(null); setForm({ kategori: '', kode_barang: '', nama_barang: '', modal: '', harga_jual: '' }); }} className="bg-gray-600 hover:bg-gray-500 text-white p-3 rounded px-6 font-bold transition">Batal</button>
+                <button onClick={() => { setEditId(null); setForm({ kategori: '', kode_barang: '', nama_barang: '', modal: '', harga_jual: '' }); }} className="w-full md:w-auto bg-transparent border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white font-bold text-base md:text-lg p-3 rounded-lg transition px-8 active:scale-95">
+                  Batal
+                </button>
               )}
             </div>
           </div>
         </div>
 
         {/* TABEL DAFTAR PRODUK */}
-        <div className="bg-[#1e2230] border border-[#2d3345] rounded-xl shadow-sm overflow-hidden">
-          <table className="w-full text-sm text-left">
-            <thead className="text-white text-sm bg-[#161925] border-b border-[#2d3345]">
-              <tr>
-                <th className="px-6 py-4 font-bold">Kode</th>
-                <th className="px-6 py-4 font-bold">Nama Produk</th>
-                <th className="px-6 py-4 font-bold">Modal</th>
-                <th className="px-6 py-4 font-bold">Jual</th>
-                <th className="px-6 py-4 font-bold text-center">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(groupedProducts).map(([kategori, items]) => (
-                <React.Fragment key={kategori}>
-                  <tr className="bg-[#323b4e] border-b border-[#2d3345]">
-                    <td colSpan="5" className="px-6 py-3 font-extrabold text-[#0dcaf0] uppercase tracking-wide">
-                      📌 KATEGORI: {kategori}
-                    </td>
-                  </tr>
-                  
-                  {items.map((prod) => (
-                    <tr key={prod.id} className="border-b border-[#2d3345] hover:bg-[#1a1e2b] transition">
-                      <td className="px-6 py-4 font-bold text-white">{prod.kode_barang}</td>
-                      <td className="px-6 py-4 text-gray-300 uppercase">{prod.nama_barang}</td>
-                      <td className="px-6 py-4 text-gray-200">{formatRp(prod.modal)}</td>
-                      <td className="px-6 py-4 text-gray-200">{formatRp(prod.harga_jual)}</td>
-                      <td className="px-6 py-4">
-                        <div className="flex gap-2 justify-center">
-                          <button onClick={() => handleEdit(prod)} className="bg-[#ffc107] hover:bg-yellow-500 text-black font-bold text-xs px-4 py-2 rounded transition">Ubah</button>
-                          <button onClick={() => handleHapus(prod.id)} className="bg-[#dc3545] hover:bg-red-600 text-white font-bold text-xs px-4 py-2 rounded transition">Hapus</button>
-                        </div>
+        <h3 className="font-bold text-lg mb-3 flex items-center gap-2 text-white">📋 Daftar Produk Aktif</h3>
+        <div className="bg-[#111] border border-blue-900 rounded-xl overflow-hidden shadow-sm">
+          <div className="overflow-x-auto pb-4">
+            <table className="w-full text-xs md:text-sm text-left whitespace-nowrap">
+              <thead className="text-gray-400 bg-[#0a0a0a] border-b-2 border-blue-900">
+                <tr>
+                  <th className="px-4 py-4 font-bold">Kode</th>
+                  <th className="px-4 py-4 font-bold">Nama Produk</th>
+                  <th className="px-4 py-4 font-bold">Modal</th>
+                  <th className="px-4 py-4 font-bold">Jual</th>
+                  <th className="px-4 py-4 font-bold text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(groupedProducts).map(([kategori, items]) => (
+                  <React.Fragment key={kategori}>
+                    {/* BARIS KATEGORI */}
+                    <tr className="bg-blue-900/30 border-b-2 border-blue-900">
+                      <td colSpan="5" className="px-4 py-3 font-extrabold text-cyan-400 uppercase tracking-wide">
+                        📌 KATEGORI: {kategori}
                       </td>
                     </tr>
-                  ))}
-                </React.Fragment>
-              ))}
+                    
+                    {/* DATA PRODUK */}
+                    {items.map((prod) => (
+                      <tr key={prod.id} className="border-b border-blue-900/40 hover:bg-blue-900/20 transition-colors">
+                        <td className="px-4 py-3 font-bold text-yellow-400 font-mono">{prod.kode_barang}</td>
+                        <td className="px-4 py-3 text-white font-bold uppercase">{prod.nama_barang}</td>
+                        <td className="px-4 py-3 text-gray-400">{formatRp(prod.modal)}</td>
+                        <td className="px-4 py-3 text-emerald-400 font-bold">{formatRp(prod.harga_jual)}</td>
+                        <td className="px-4 py-3">
+                          <div className="flex gap-2 justify-center">
+                            <button onClick={() => handleEdit(prod)} className="bg-transparent border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black font-bold text-[10px] md:text-xs px-3 py-1.5 rounded transition">
+                              Ubah
+                            </button>
+                            <button onClick={() => handleHapus(prod.id)} className="bg-transparent border border-red-500 text-red-500 hover:bg-red-500 hover:text-white font-bold text-[10px] md:text-xs px-3 py-1.5 rounded transition">
+                              Hapus
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </React.Fragment>
+                ))}
 
-              {products.length === 0 && (
-                <tr>
-                  <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
-                    Belum ada produk yang ditambahkan.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                {products.length === 0 && (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
+                      Belum ada produk yang ditambahkan.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
+        
       </div>
     </div>
   );
