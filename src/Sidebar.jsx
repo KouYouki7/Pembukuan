@@ -93,7 +93,14 @@ export default function Sidebar({ active }) {
           </button>
         </nav>
 
-        <button className="text-red-500 border-2 border-red-600 bg-transparent hover:bg-red-600 hover:text-white hover:shadow-[0_0_10px_#dc2626] p-3 rounded mt-auto font-bold transition-all flex justify-center items-center gap-2">
+{/* TOMBOL KELUAR AKUN PASTI BERFUNGSI */}
+        <button 
+          onClick={() => {
+            localStorage.removeItem('isYagezLoggedIn');
+            window.location.href = '/';
+          }}
+          className="text-red-500 border-2 border-red-600 bg-transparent hover:bg-red-600 hover:text-white hover:shadow-[0_0_10px_#dc2626] p-3 rounded mt-auto font-bold transition-all flex justify-center items-center gap-2"
+        >
           <span>👻</span> Keluar Akun
         </button>
       </div>
