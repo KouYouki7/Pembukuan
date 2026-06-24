@@ -22,11 +22,10 @@ export default function Dashboard() {
   const [chartData, setChartData] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
 
-  // STATE UNTUK PAGINATION LEADERBOARD (5 data per halaman)
+  // STATE UNTUK PAGINATION LEADERBOARD
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // FUNGSI HELPER UNTUK QUICK FILTER TANGGAL
   const getPastDate = (daysAgo) => {
     const d = new Date();
     d.setDate(d.getDate() - daysAgo);
@@ -221,13 +220,11 @@ export default function Dashboard() {
             </div>
             
             <div className="flex items-center gap-2 w-full sm:w-auto bg-black p-2 rounded-lg border border-blue-600">
-              {/* DI SINI SUDAH DITAMBAHKAN [color-scheme:dark] */}
               <input 
                 type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} 
                 className="bg-transparent outline-none text-white text-xs md:text-sm cursor-pointer w-full [color-scheme:dark]" 
               />
               <span className="text-gray-500 font-bold">s/d</span>
-              {/* DI SINI SUDAH DITAMBAHKAN [color-scheme:dark] */}
               <input 
                 type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} 
                 className="bg-transparent outline-none text-white text-xs md:text-sm cursor-pointer w-full [color-scheme:dark]" 
@@ -322,7 +319,9 @@ export default function Dashboard() {
           </div>
 
           <div className="lg:col-span-8 bg-[#111] rounded-xl border border-blue-900 overflow-hidden flex flex-col print:bg-white print:border-black print:break-inside-avoid">
-            <div className="p-4 border-b border-blue-900 print:border-black flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 bg-[#0a0a0a] print:bg-white shrink-0">
+            
+            {/* HEADER LEADERBOARD: TINGGI & UKURANNYA SEKARANG DIBUAT IDENTIK/SIMETRIS (h-8) */}
+            <div className="p-4 border-b border-blue-900 print:border-black flex flex-col xl:flex-row justify-between items-start xl:items-center gap-3 bg-[#0a0a0a] print:bg-white shrink-0">
               
               <h4 className="font-bold flex items-center gap-2.5 print:text-black text-lg whitespace-nowrap shrink-0 m-0">
                 <svg className="w-5 h-5 md:w-6 md:h-6 text-[#ff4da6]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -331,33 +330,34 @@ export default function Dashboard() {
                   <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                   <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
-                <span className="text-white">Leaderboard Pelanggan</span>
+                <span className="text-white">Leaderboard</span>
               </h4>
               
-              <div className="flex flex-row flex-wrap items-center gap-2 print:hidden">
+              <div className="flex flex-row items-center gap-2 w-full xl:w-auto print:hidden mt-2 xl:mt-0">
                 <input 
                   type="text" 
-                  placeholder="Cari ID Akun..." 
+                  placeholder="Cari ID..." 
                   value={searchTarget} 
                   onChange={(e) => setSearchTarget(e.target.value)} 
-                  className="bg-black border border-blue-600 text-white text-xs md:text-sm px-3 py-2 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] transition w-[130px] sm:w-[150px]"
+                  className="flex-1 min-w-[100px] xl:w-[150px] h-8 sm:h-9 bg-black border border-blue-600 text-white text-[10px] sm:text-xs px-3 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] transition"
                 />
                 <button 
                   onClick={() => setAppliedSearch(searchTarget)} 
-                  className="bg-blue-900 hover:bg-blue-700 text-cyan-400 border border-blue-600 px-3 py-2 rounded-lg text-xs md:text-sm font-bold transition shadow-[0_0_10px_rgba(37,99,235,0.3)] shrink-0"
+                  className="shrink-0 h-8 sm:h-9 px-3 sm:px-4 bg-blue-900 hover:bg-blue-700 text-cyan-400 border border-blue-600 rounded-lg text-[10px] sm:text-xs font-bold transition flex items-center justify-center shadow-[0_0_10px_rgba(37,99,235,0.3)]"
                 >
                   Cari
                 </button>
                 <select 
                   value={sortPelanggan} 
                   onChange={(e) => setSortPelanggan(e.target.value)} 
-                  className="bg-black border border-blue-600 text-white text-xs md:text-sm px-3 py-2 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] transition cursor-pointer max-w-[170px] sm:max-w-none shrink-0"
+                  className="shrink-0 w-[95px] sm:w-[110px] h-8 sm:h-9 bg-black border border-blue-600 text-white text-[10px] sm:text-xs px-2 rounded-lg outline-none focus:border-yellow-400 focus:shadow-[0_0_8px_#facc15] transition cursor-pointer"
                 >
-                  <option value="terbanyak">🔥 Sering Order</option>
-                  <option value="sultan">💎 Banyak Belanja</option>
-                  <option value="terdikit">💤 Jarang Order</option>
+                  <option value="terbanyak">🔥 Sering</option>
+                  <option value="sultan">💎 Sultan</option>
+                  <option value="terdikit">💤 Jarang</option>
                 </select>
               </div>
+
             </div>
 
             <div className="overflow-x-auto relative print:overflow-visible">
