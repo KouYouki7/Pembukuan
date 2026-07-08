@@ -16,7 +16,8 @@ export default function Dashboard() {
   const [searchTarget, setSearchTarget] = useState('');
   const [appliedSearch, setAppliedSearch] = useState('');
 
-  const [stats, setStats] = useState({ hari: 0, minggu: 0, bulan: 0, total: 0 });
+  // STATE STATS DISESUAIKAN: Fokus pada Keuntungan saja
+  const [stats, setStats] = useState({ hari: 0, minggu: 0, labaFilter: 0, trx: 0 });
   const [kategori, setKategori] = useState([]);
   const [pelanggan, setPelanggan] = useState([]);
   const [chartData, setChartData] = useState([]);
@@ -51,26 +52,35 @@ export default function Dashboard() {
   useEffect(() => {
     if (allTrx.length === 0) return;
 
-    const currentMonthStr = new Date().toISOString().slice(0, 7);
-    let uHari = 0, uMinggu = 0, uBulan = 0;
+    // 1. HITUNG STATISTIK FIX (Hari Ini & 7 Hari Terakhir)
+    let uHari = 0, uMinggu = 0;
+    const sevenDaysAgo = getPastDate(7);
     
     allTrx.forEach(trx => {
       const tgl = trx.created_at.split('T')[0];
-      const bln = trx.created_at.slice(0, 7);
       const laba = Number(trx.harga_jual_saat_transaksi) - Number(trx.modal_saat_transaksi);
-
+      
       if (tgl === todayStr) uHari += laba;
-      if (bln === currentMonthStr) uBulan += laba; 
+      if (tgl >= sevenDaysAgo && tgl <= todayStr) uMinggu += laba;
     });
 
-    setStats({ hari: uHari, minggu: uHari * 3, bulan: uBulan, total: allTrx.length }); 
-
+    // 2. FILTER TRANSAKSI BERDASARKAN RENTANG TANGGAL
     const filteredTrx = allTrx.filter(trx => {
       const tgl = trx.created_at.split('T')[0];
       return tgl >= startDate && tgl <= endDate;
     });
     setFilteredTransactions(filteredTrx);
 
+    // 3. HITUNG LABA KHUSUS UNTUK TANGGAL YANG DIFILTER
+    let uLabaFilter = 0;
+    filteredTrx.forEach(trx => {
+      uLabaFilter += (Number(trx.harga_jual_saat_transaksi) - Number(trx.modal_saat_transaksi));
+    });
+    
+    // Simpan ke state
+    setStats({ hari: uHari, minggu: uMinggu, labaFilter: uLabaFilter, trx: filteredTrx.length });
+
+    // 4. HITUNG DATA GRAFIK (Dari data yg difilter)
     const dateMap = {};
     filteredTrx.forEach(trx => {
       const tgl = trx.created_at.split('T')[0]; 
@@ -86,6 +96,7 @@ export default function Dashboard() {
     });
     setChartData(dailyData);
 
+    // 5. HITUNG DATA KATEGORI & LEADERBOARD (Dari data yg difilter)
     const catMap = {};
     const userMap = {};
 
@@ -233,17 +244,17 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* KOTAK STATISTIK */}
+        {/* KOTAK STATISTIK (DIPERBARUI HANYA MENAMPILKAN LABA & TRX) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 print:grid-cols-4 print:gap-2">
           {[ 
-            { t: 'Total Keuntungan Hari Ini', v: stats.hari, c: 'text-blue-500 print:text-black', icon: 'wallet', iconStyle: 'text-blue-500 border-blue-500/30 bg-blue-500/10' }, 
-            { t: 'Keuntungan 1 Minggu Terakhir', v: stats.minggu, c: 'text-yellow-500 print:text-black', icon: 'trend', iconStyle: 'text-yellow-500 border-yellow-500/30 bg-yellow-500/10' }, 
-            { t: 'Total Laba Bulan Ini', v: stats.bulan, c: 'text-emerald-500 print:text-black', icon: 'ribbon', iconStyle: 'text-emerald-500 border-emerald-500/30 bg-emerald-500/10' }, 
-            { t: 'Orderan Sukses', v: `${stats.total} Trx`, c: 'text-rose-500 print:text-black', icon: 'pulse', iconStyle: 'text-rose-500 border-rose-500/30 bg-rose-500/10' } 
+            { t: 'Keuntungan Hari Ini', v: stats.hari, c: 'text-blue-500 print:text-black', icon: 'wallet', iconStyle: 'text-blue-500 border-blue-500/30 bg-blue-500/10' }, 
+            { t: 'Keuntungan 7 Hari Terakhir', v: stats.minggu, c: 'text-yellow-500 print:text-black', icon: 'trend', iconStyle: 'text-yellow-500 border-yellow-500/30 bg-yellow-500/10' }, 
+            { t: 'Laba (Periode Terpilih)', v: stats.labaFilter, c: 'text-emerald-500 print:text-black', icon: 'ribbon', iconStyle: 'text-emerald-500 border-emerald-500/30 bg-emerald-500/10' }, 
+            { t: 'Orderan (Periode Terpilih)', v: `${stats.trx} Trx`, c: 'text-rose-500 print:text-black', icon: 'pulse', iconStyle: 'text-rose-500 border-rose-500/30 bg-rose-500/10' } 
           ].map((item, i) => (
             <div key={i} className="bg-[#111] print:bg-white print:border-black print:shadow-none p-4 rounded-xl border border-blue-900 flex justify-between items-center">
               <div>
-                <p className="text-[11px] md:text-xs text-gray-400 print:text-gray-600 font-medium mb-1">{item.t}</p>
+                <p className="text-[11px] md:text-[11px] text-gray-400 print:text-gray-600 font-medium mb-1 truncate max-w-[120px] sm:max-w-none" title={item.t}>{item.t}</p>
                 <h3 className={`text-xl md:text-2xl font-bold ${item.c}`}>
                   {typeof item.v === 'number' ? formatRp(item.v) : item.v}
                 </h3>
@@ -320,9 +331,7 @@ export default function Dashboard() {
 
           <div className="lg:col-span-8 bg-[#111] rounded-xl border border-blue-900 overflow-hidden flex flex-col print:bg-white print:border-black print:break-inside-avoid">
             
-            {/* HEADER LEADERBOARD: TINGGI & UKURANNYA SEKARANG DIBUAT IDENTIK/SIMETRIS (h-8) */}
             <div className="p-4 border-b border-blue-900 print:border-black flex flex-col xl:flex-row justify-between items-start xl:items-center gap-3 bg-[#0a0a0a] print:bg-white shrink-0">
-              
               <h4 className="font-bold flex items-center gap-2.5 print:text-black text-lg whitespace-nowrap shrink-0 m-0">
                 <svg className="w-5 h-5 md:w-6 md:h-6 text-[#ff4da6]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -357,7 +366,6 @@ export default function Dashboard() {
                   <option value="terdikit">💤 Jarang</option>
                 </select>
               </div>
-
             </div>
 
             <div className="overflow-x-auto relative print:overflow-visible">
